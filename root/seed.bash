@@ -21,12 +21,13 @@ mkdir /root/vpcquery
 
 curl -o /root/doit.bash                  https://raw.githubusercontent.com/peterhodes/demo93/main/root/doit.bash
 curl -o /root/doit-peering.py            https://raw.githubusercontent.com/peterhodes/demo93/main/root/doit-peering.py
+curl -o /root/doit-createroute           https://raw.githubusercontent.com/peterhodes/demo93/main/root/doit-createroute
 curl -o /root/get_hosts                  https://raw.githubusercontent.com/peterhodes/demo93/main/root/get_hosts
 curl -o /root/get_vpcs                   https://raw.githubusercontent.com/peterhodes/demo93/main/root/get_vpcs
 curl -o /root/get_vpcs.py                https://raw.githubusercontent.com/peterhodes/demo93/main/root/get_vpcs.py
 curl -o /root/archived_scripts           https://raw.githubusercontent.com/peterhodes/demo93/main/root/archived_scripts
 
-chmod +x doit.bash doit-peering.py get_hosts get_vpcs get_vpcs.py
+chmod +x doit.bash doit-peering.py doit-createroute get_hosts get_vpcs get_vpcs.py
 
 curl -o /root/terraform/main.tf          https://raw.githubusercontent.com/peterhodes/demo93/main/root/terraform/main.tf
 curl -o /root/vpcquery/json1             https://raw.githubusercontent.com/peterhodes/demo93/main/root/vpcquery/json1
