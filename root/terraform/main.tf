@@ -7,7 +7,9 @@ variable "ami_id"        { default = "ami-098828924dc89ea4a" }
 variable "instance_type" { default = "t2.micro" }
 variable "key_pair"      { default = "keypair22112" }
 variable "public_cidr"   { default = "10.1.0.0/16" }
-variable "project_name"  { default = "demo93" }
+variable "project_name"  { default = "demo93-tf" }
+variable "cfn_cidr"      { default = "10.0.0.0/16" }
+variable "cfn_vpcid"     { default = "vpc-0fee6fead17f5f027" }
 
 ##############################################################################
 ##############################################################################
@@ -26,7 +28,7 @@ resource "aws_vpc" "my-vpc" {
   enable_dns_hostnames = "true"
 
   tags = {
-    Name =  "${var.project_name}-VPC"
+    Name =  "${var.project_name}-vpc"
     project = "demo93"
   }
 }
@@ -40,7 +42,7 @@ resource "aws_subnet" "my-subnet" {
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name =  "${var.project_name}-SUBNET"
+    Name =  "${var.project_name}-subnet"
   }
 }
 data "aws_availability_zones" "available" {
@@ -63,7 +65,6 @@ resource "aws_security_group" "my-sg" {
   name        = "test01"
   description = "test02"
   vpc_id      = aws_vpc.my-vpc.id
-
   ingress {
     description      = "SSH inbound"
     from_port        = 22
@@ -71,16 +72,14 @@ resource "aws_security_group" "my-sg" {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-
   egress {
     from_port        = 0
     to_port          = 0
     protocol         = "22"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-
   tags = {
-    Name =  "${var.project_name}-SG"
+    Name =  "${var.project_name}-sg"
   }
 }
 
@@ -89,9 +88,8 @@ resource "aws_security_group" "my-sg" {
 
 resource "aws_internet_gateway" "my-igw" {
   vpc_id = aws_vpc.my-vpc.id
-
   tags = {
-    Name =  "${var.project_name}-IGW"
+    Name =  "${var.project_name}-igw"
   }
 }
 
@@ -106,12 +104,17 @@ resource "aws_internet_gateway" "my-igw" {
 # https://stackoverflow.com/questions/67423726/attaching-an-aws-vpc-to-an-igw-with-terraform
 
 ##############################################################################
-## ROUTE TABLE
+## ROUTE
 
-resource "aws_route" "my-routetable" {
-  route_table_id         = aws_vpc.my-vpc.main_route_table_id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.my-igw.id
+resource "aws_route" "my-route01" {
+  route_table_id            = aws_vpc.my-vpc.main_route_table_id
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id                = aws_internet_gateway.my-igw.id
+}
+resource "aws_route" "my-route02" {
+  route_table_id            = aws_vpc.my-vpc.main_route_table_id
+  destination_cidr_block    = "10.0.0.0/16"
+  vpc_peering_connection_id = aws_vpc_peering_connection.my-pcx.id
 }
 
 ##############################################################################
@@ -123,19 +126,30 @@ resource "aws_route_table_association" "my-rta" {
 }
 
 ##############################################################################
+## VPC PEERING CONNECTION
+
+resource "aws_vpc_peering_connection" "my-pcx" {
+  vpc_id      = aws_vpc.my-vpc.id
+  peer_vpc_id = var.cfn_vpcid
+  auto_accept = true
+  tags = {
+    Name =  "${var.project_name}-pcx"
+  }
+}
+
+##############################################################################
 ## INSTANCE
 
 resource "aws_instance" "my-instance" {
-    count                       = 3
-    ami                         = var.ami_id
-    instance_type               = var.instance_type
-    key_name                    = var.key_pair
-    subnet_id                   = aws_subnet.my-subnet.id
-    vpc_security_group_ids      = [aws_security_group.my-sg.id]
-    associate_public_ip_address = false
-
+  count                       = 0
+  ami                         = var.ami_id
+  instance_type               = var.instance_type
+  key_name                    = var.key_pair
+  subnet_id                   = aws_subnet.my-subnet.id
+  vpc_security_group_ids      = [aws_security_group.my-sg.id]
+  associate_public_ip_address = false
   tags = {
-    Name =  "${var.project_name}-INSTANCE"
+    Name =  "${var.project_name}-instance"
   }
 }
 
