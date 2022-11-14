@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+
+import os
+import re
+
+
+
+# 1. Terraform route table - as a result of using "route" resource it is not possible to use
+ "route table" resource - and therefore the route table is not named so the first step is to
+ name the route table added by terraform.
+
+
+
+# Get the id of the cf route table.
+
+getRouteIdCmd = " aws ec2 describe-route-tables --query 'RouteTables[?Tags[?Key==`Name`]|[?Value==`demo93-cf-rt`]].RouteTableId' --output text "
+
+getPeeringConnectionCmd = " aws ec2 describe-vpc-peering-connections --query 'VpcPeeringConnections[?Tags[?Key==`Name`]|[?Value==`demo93-tf-pcx`]].[VpcPeeringConnectionId,Status.Code]' --output text | egrep 'active' | awk '{print $1}' "
+
+RouteId    = os.popen(getRouteIdCmd).read().rstrip('\n')
+PeeringId  = os.popen(getPeeringConnectionCmd).read().rstrip('\n')
+CidrTarget = '10.1.0.0/16'
+
+print('>',RouteId  ,'<',sep='')
+print('>',PeeringId,'<',sep='')
+
+mycmd = "aws ec2 create-route --route-table-id " + RouteId + " --destination-cidr-block " +
+CidrTarget + " --vpc-peering-connection-id " + PeeringId
+
+print('>',mycmd,'<',sep='')
+
+#
+# vpcCmd = "aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key==`project`]|[?Value==`demo93`]].VpcId' --output text"
+# print('Running >',vpcCmd,'<',sep='')
+# vpcString = os.popen(vpcCmd).read()
+# vpcList   = re.split('\s+',vpcString)
+# print('VpcIDs >',vpcString,'<',sep='')
+#
+#
+# peeringCmd = 'aws ec2 create-vpc-peering-connection --vpc-id ' + vpcList[0] + ' --peer-vpc-id ' + vpcList[1] + ' | egrep "VpcPeeringConnectionId"'
+# print('Running >',peeringCmd,'<',sep='')
+# peeringString = os.popen(peeringCmd).read()
+# peeringList   = re.split('\s+',peeringString)
+#
+#
+# peeringId=peeringList[2]
+# peeringId=re.sub('[",]', '', peeringId)
+# print('Peering ID >',peeringId,'<',sep='')
+#
+#
+# acceptCmd = 'aws ec2 accept-vpc-peering-connection --vpc-peering-connection-id ' + peeringId
+# print('Running >',acceptCmd,'<',sep='')
+# acceptString = os.popen(acceptCmd).read()
