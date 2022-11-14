@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: True
+      Tags:
+      - Key: project
+        Value : demo93
+  mySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.1/24
+      VpcId: !Ref myVPC
+      MapPublicIpOnLaunch: True
+  myRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+  mySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group to allow ssh,http,icmp
+      GroupName: SecurityGroup
+      VpcId: !Ref myVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: icmp
+        FromPort: 8
+        ToPort: -1
+        CidrIp: 0.0.0.0/0
+  myInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  myVPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref myVPC
+      InternetGatewayId: !Ref myInternetGateway
+  myRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref myRouteTable
+      GatewayId: !Ref myInternetGateway
+      DestinationCidrBlock : 0.0.0.0/0
+  mySubnetRouteTableAssociation:
+     Type: AWS::EC2::SubnetRouteTableAssociation
+     Properties:
+      SubnetId: !Ref mySubnet
+      RouteTableId: !Ref myRouteTable
+  myInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:     t2.micro
+      ImageId:          ami-098828924dc89ea4a
+      KeyName:          keypair22112
+      SubnetId:         !Ref mySubnet
+      SecurityGroupIds:
+        - !Ref mySecurityGroup
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            curl -o root/seed.bash https://raw.githubusercontent.com/peterhodes/demo93/main/root/seed.bash
+            /usr/bin/bash /root/seed.bash
+            mkdir /root/.aws
+            echo "[default]" >> /root/.aws/config
+            echo "region = eu-west-2" >> /root/.aws/config
+            echo "output = json" >> /root/.aws/config
+            echo "[default]" >> /root/.aws/credentials
+            echo "aws_access_key_id = AKIAXXXXXXXXXXXXXXXX" >> /root/.aws/credentials
+            echo "aws_secret_access_key = XXXXXXXXXXXXXXXX" >> /root/.aws/credentials
