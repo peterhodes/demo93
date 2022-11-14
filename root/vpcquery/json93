@@ -1,0 +1,68 @@
+{
+    "Vpcs": [
+        {
+            "VpcId": "vpc-0d71f79268d77326c",
+            "InstanceTenancy": "default",
+            "Tags": [
+                {
+                    "Value": "demo93-VPC",
+                    "Key": "Name"
+                },
+                {
+                    "Value": "demo93",
+                    "Key": "proj"
+                }
+            ],
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-05ce04b12c275efb6",
+                    "CidrBlock": "10.1.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "State": "available",
+            "DhcpOptionsId": "dopt-0c2b7de6a08157938",
+            "OwnerId": "641299796040",
+            "CidrBlock": "10.1.0.0/16",
+            "IsDefault": false
+        },
+        {
+            "VpcId": "vpc-0fee6fead17f5f027",
+            "InstanceTenancy": "default",
+            "Tags": [
+                {
+                    "Value": "arn:aws:cloudformation:eu-west-2:641299796040:stack/demo93/ef2924b0-6383-11ed-b1b9-0ae36c4f8bfe",
+                    "Key": "aws:cloudformation:stack-id"
+                },
+                {
+                    "Value": "myVPC",
+                    "Key": "aws:cloudformation:logical-id"
+                },
+                {
+                    "Value": "demo93",
+                    "Key": "project"
+                },
+                {
+                    "Value": "demo93",
+                    "Key": "aws:cloudformation:stack-name"
+                }
+            ],
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-0d5b393fd6325992a",
+                    "CidrBlock": "10.0.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "State": "available",
+            "DhcpOptionsId": "dopt-0c2b7de6a08157938",
+            "OwnerId": "641299796040",
+            "CidrBlock": "10.0.0.0/16",
+            "IsDefault": false
+        }
+    ]
+}
