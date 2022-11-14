@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cd terraform
+terraform show -json terraform.tfstate | jq '.values.root_module.resources[] | select(.address | contains("aws_instance.my-instance")) | .values.private_ip'
