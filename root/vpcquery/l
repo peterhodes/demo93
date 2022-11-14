@@ -1,0 +1,29 @@
+# 01 View entire json
+cat json2 | jq '.'
+
+# 02 View just VpcIds
+cat json2 | jq '.Vpcs[].VpcId'
+
+# 03 View a specific VpcId
+cat json2 | jq '.Vpcs[] | select(.VpcId=="vpc-0d71f79268d77326c")'
+
+# 04 Above - but then display the tags.
+cat json2 | jq '.Vpcs[] | select(.VpcId=="vpc-0d71f79268d77326c") | .Tags'
+
+# 05 Display just Tags without select
+cat json2 | jq '.Vpcs[].Tags'
+
+# 06 Further refinement.
+cat json2 | jq '.Vpcs[].Tags[].Key'
+
+# 07 Select key entries where Key is "project"
+cat json2 | jq '.Vpcs[].Tags[] | select(.Key=="project")'
+
+# 08 Finally get vpcids for a given selection
+cat json2 | jq '.Vpcs[] | select(.Tags[].Key=="project") | .VpcId'
+
+# 09 Final result
+cat json93 | jq '.Vpcs[] | select(.Tags[].Key=="project" and .Tags[].Value=="demo93") | .VpcId'
+
+
+aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key==`project`]|[?Value==`demo93`]].VpcId' --output text
