@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+VpcList=$(aws ec2 describe-vpcs --query 'Vpcs[*].VpcId' --filters 'Name=tag:project,Values=demo93' --output json | egrep 'vpc-' | sed 's/\s+//g' | sed 's/\"//g' | sed 's/,//g')
+
+for x in $VpcList
+  do
+  echo $x
+done
