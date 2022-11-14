@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+aws cloudformation create-stack --stack-name demo93 --template-body file://create-stack.cfn
