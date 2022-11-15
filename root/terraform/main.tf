@@ -117,6 +117,10 @@ resource "aws_route" "my-route02" {
   vpc_peering_connection_id = aws_vpc_peering_connection.my-pcx.id
 }
 
+# Note that it is currently unsupported to use both the "aws_route" and "aws_route_table" terraform resources.
+#  hence - we cannot use here the aws_route resource and that does cause a small problem in that the route_table
+#  that terraform generates does not afford us the opportunity to add the TAGS that we otherwise would.
+
 ##############################################################################
 ## ROUTE TABLE ASSOCIATION
 
