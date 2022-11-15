@@ -149,7 +149,7 @@ resource "aws_instance" "my-instance" {
   vpc_security_group_ids      = [aws_security_group.my-sg.id]
   associate_public_ip_address = false
   tags = {
-    Name =  "${var.project_name}-instance"
+    Name =  "${var.project_name}-ec2"
   }
 }
 
