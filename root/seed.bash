@@ -18,6 +18,11 @@ cd -
 
 cd /root
 
+ssh-keygen -t dsa -f /root/.ssh/id_dsa -N ''
+aws s3 cp /root/.ssh/id_dsa.pub s3://rjexm3cvdd8u/pubkey/demo93
+
+
+
 mkdir /root/terraform
 mkdir /root/vpcquery
 
