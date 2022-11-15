@@ -35,7 +35,7 @@ Resources:
         ToPort: '80'
         CidrIp: 0.0.0.0/0
       - IpProtocol: icmp
-        FromPort: 8
+        FromPort: -1
         ToPort: -1
         CidrIp: 0.0.0.0/0
   myInternetGateway:
