@@ -14,6 +14,8 @@ unzip terraform*.zip
 cp terraform /usr/local/bin
 cd -
 
+#git clone git@github.com:peterhodes/demo93.git
+
 cd /root
 
 mkdir /root/terraform
