@@ -141,6 +141,11 @@ resource "aws_vpc_peering_connection" "my-pcx" {
   }
 }
 
+# We are effectively connecting to VPCs - the "Cloudformation VPC" (10.0.0.0/16) and
+#  the "Terraform VPC" (10.1.0.0/16). We add the appropriate route-table entry for
+#  TFM->CFN but we don't have the opportunity (here) to add the route-table entry for
+#  CFN->TFM, so we have to do that manually in a script I call doit-createroute
+
 ##############################################################################
 ## INSTANCE
 
