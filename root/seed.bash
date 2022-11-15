@@ -19,7 +19,7 @@ cd -
 cd /root
 
 ssh-keygen -t dsa -f /root/.ssh/id_dsa -N ''
-aws s3 cp /root/.ssh/id_dsa.pub s3://rjexm3cvdd8u/pubkey/demo93
+aws s3 cp /root/.ssh/id_dsa.pub s3://rjexm3cvdd8u/pubkey/demo93 --content-type text/plain
 
 
 
